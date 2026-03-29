@@ -1,4 +1,7 @@
-@entity
+package es.unican.rodrigo.mohamed.polafix;
+import jakarta.persistence.*;
+
+@Entity
 public class Episodio {
     private int numEpisodio;
     private int temporada;
@@ -6,6 +9,17 @@ public class Episodio {
     @Id
     private int id;
     private String nombre;
+
+    public Episodio() {
+    }
+
+
+    public Episodio(int numEpisodio, int temporada, String nombre, String sinopsis) {
+    this.numEpisodio = numEpisodio;
+    this.temporada = temporada;
+    this.nombre = nombre;
+    this.sinopsis = sinopsis;
+}
 
 
     public int getNumEpisodio() {

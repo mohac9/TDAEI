@@ -1,13 +1,15 @@
 import java.util.ArrayList;
 import java.util.List;
+import jakarta.persistence.*;
 
-@entity
+@Entity
 public class Factura {
     @Id
     private int idFactura;
     private String usuarioNombre;
     private int mes;
     private int año;
+    @ElementCollection
     private List<EntradaFactura> entradas = new ArrayList<EntradaFactura> ();
 
     public double calcularCoste() {

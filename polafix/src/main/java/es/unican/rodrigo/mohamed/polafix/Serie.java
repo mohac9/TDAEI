@@ -1,17 +1,21 @@
 import java.util.ArrayList;
 import java.util.List;
+import jakarta.persistence.*;
 
 
 @entity
 public class Serie {
     private String tier;
-    @id
+    @Id
     private int idSerie;
     private String sinopsis;
     private String nombre;
     private String creadores;
     private String actores;
+    @Enumerated(EnumType.STRING)
     private TipoSerie Categoria;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_serie")
     private List<Episodio> episodios = new ArrayList<Episodio> ();
 
     public String getTier() {

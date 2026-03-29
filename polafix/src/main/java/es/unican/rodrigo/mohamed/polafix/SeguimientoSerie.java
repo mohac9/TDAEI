@@ -1,10 +1,13 @@
-import com.modeliosoft.modelio.javadesigner.annotations.objid;
+import jakarta.persistence.*;
+import java.util.List;
 
-@embedabble
+@Embeddable
 public class SeguimientoSerie {
     private int idSerie;
+    @Enumerated(EnumType.STRING)
     private EstadosSerie estado;
-    private int[] capitulosVistos;
+    @ElementCollection
+    private List<Integer> capitulosVistos;
 
     public int getIdSerie() {
         return idSerie;

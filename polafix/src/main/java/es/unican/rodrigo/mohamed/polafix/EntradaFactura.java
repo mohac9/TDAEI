@@ -1,6 +1,7 @@
 import java.util.Date;
+import jakarta.persistence.*;
 
-@embedabble
+@Embeddable
 public class EntradaFactura {
     private Date fecha;
 

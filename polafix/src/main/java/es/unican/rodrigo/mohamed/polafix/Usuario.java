@@ -1,13 +1,15 @@
 import java.util.ArrayList;
 import java.util.List;
+import jakarta.persistence.*;
 
-@entity
+@Entity
 public class Usuario {
-    @id
+    @Id
     private String nombre;
     private String password;
     private String IBAN;
     private boolean cuotaMensual;
+    @Embedded
     private SeguimientoSerie seguimientoSerie;
     private List<Factura> facturas = new ArrayList<Factura> ();
 
