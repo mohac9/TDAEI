@@ -1,0 +1,331 @@
+openapi: 3.0.3
+info:
+  title: Polaflix API
+  version: 1.0.0
+
+tags:
+  - name: Usuarios
+  - name: Series
+  - name: Facturas
+
+paths:
+  /api/usuarios/registro:
+    post:
+      tags: [Usuarios]
+      operationId: registrarUsuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistroUsuarioRequest'
+      responses:
+        '201':
+          description: Usuario creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioDTO'
+        '400':
+          description: Faltan parámetros o son inválidos
+        '409':
+          description: El usuario ya existe
+
+  /api/usuarios/login:
+    post:
+      tags: [Usuarios]
+      operationId: loginUsuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Credenciales válidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioDTO'
+        '404':
+          description: Usuario no encontrado o contraseña incorrecta
+
+  /api/usuarios/{nombreUsuario}/series:
+    get:
+      tags: [Usuarios]
+      operationId: obtenerSeriesUsuario
+      parameters:
+        - name: nombreUsuario
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Listas de series del usuario recuperadas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesUsuarioDTO'
+        '404':
+          description: Usuario no encontrado
+
+    post:
+      tags: [Usuarios]
+      operationId: clasificarSerieUsuario
+      parameters:
+        - name: nombreUsuario
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModificarListaSerieRequest'
+      responses:
+        '200':
+          description: Serie clasificada correctamente
+        '404':
+          description: Usuario o Serie no encontrados
+
+  /api/usuarios/{nombreUsuario}/episodios-vistos:
+    post:
+      tags: [Usuarios]
+      operationId: marcarEpisodioVisto
+      parameters:
+        - name: nombreUsuario
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EpisodioVistoRequest'
+      responses:
+        '200':
+          description: Episodio marcado como visto y cargo generado
+        '404':
+          description: Episodio o Usuario no existen
+
+  /api/series:
+    get:
+      tags: [Series]
+      operationId: obtenerCatalogoSeries
+      responses:
+        '200':
+          description: Lista de series
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SerieDTO'
+
+  /api/series/{nombreSerie}/episodios:
+    get:
+      tags: [Series]
+      operationId: obtenerEpisodiosPorSerie
+      parameters:
+        - name: nombreSerie
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de episodios de la serie
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TemporadaDTO'
+        '404':
+          description: Serie no encontrada
+
+  /api/usuarios/{nombreUsuario}/facturas:
+    get:
+      tags: [Facturas]
+      operationId: obtenerFacturasUsuario
+      parameters:
+        - name: nombreUsuario
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista resumen de facturas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FacturaResumenDTO'
+        '404':
+          description: Usuario no encontrado
+
+  /api/facturas/{idFactura}:
+    get:
+      tags: [Facturas]
+      operationId: obtenerDetalleFactura
+      parameters:
+        - name: idFactura
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Factura detallada recuperada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacturaDetalleDTO'
+        '404':
+          description: Factura no encontrada
+
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      required: [nombre, password]
+      properties:
+        nombre:
+          type: string
+        password:
+          type: string
+
+    RegistroUsuarioRequest:
+      type: object
+      required: [nombre, password, iban]
+      properties:
+        nombre:
+          type: string
+        password:
+          type: string
+        iban:
+          type: string
+
+    ModificarListaSerieRequest:
+      type: object
+      required: [nombreSerie, estado]
+      properties:
+        nombreSerie:
+          type: string
+        estado:
+          type: string
+          enum: [EMPEZADA, PENDIENTE, TERMINADA]
+
+    EpisodioVistoRequest:
+      type: object
+      required:
+        - nombreSerie
+        - nombreEpisodio
+      properties:
+        nombreSerie:
+          type: string
+        nombreEpisodio:
+          type: string
+
+    UsuarioDTO:
+      type: object
+      properties:
+        nombre:
+          type: string
+        iban:
+          type: string
+
+    SerieDTO:
+      type: object
+      properties:
+        nombre:
+          type: string
+        sinopsis:
+          type: string
+        categoria:
+          type: string
+          enum: [ESTANDAR, SILVER, GOLD]
+        precioCategoria:
+          type: string
+
+    EpisodioDTO:
+      type: object
+      properties:
+        nombre:
+          type: string
+        sinopsis:
+          type: string
+        temporada:
+          type: integer
+
+    SeriesUsuarioDTO:
+      type: object
+      properties:
+        empezadas:
+          type: array
+          items:
+            $ref: '#/components/schemas/SerieDTO'
+        pendientes:
+          type: array
+          items:
+            $ref: '#/components/schemas/SerieDTO'
+        terminadas:
+          type: array
+          items:
+            $ref: '#/components/schemas/SerieDTO'
+
+    FacturaResumenDTO:
+      type: object
+      properties:
+        idFactura:
+          type: string
+        mes:
+          type: string
+        anho:
+          type: integer
+        costeTotalCalculado:
+          type: number
+          format: double
+
+    FacturaDetalleDTO:
+      allOf:
+        - $ref: '#/components/schemas/FacturaResumenDTO'
+        - type: object
+          properties:
+            tipoCuota:
+              type: string
+              enum: [PREMIUM, BASICA]
+            cargos:
+              type: array
+              items:
+                $ref: '#/components/schemas/CargoDTO'
+
+    CargoDTO:
+      type: object
+      properties:
+        fecha:
+          type: string
+          format: date-time
+        importe:
+          type: number
+          format: double
+        nombreEpisodio:
+          type: string
+
+    TemporadaDTO:
+      type: object
+      properties:
+        numTemporada:
+          type: integer
+        episodios:
+          type: array
+          items:
+            $ref: '#/components/schemas/EpisodioDTO'

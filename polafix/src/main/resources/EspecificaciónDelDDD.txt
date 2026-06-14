@@ -1,0 +1,61 @@
+[Entities]
+
+-Usuario: Es una Entity ya que es una clase que requiere que su ciclo de vida sea seguido,
+ya que cadam usuario de nuestra aplicación debe tener una instancia asignada, para poder guardar
+sus datos. Además es una clase que se le pueden hacer muchos cambios en el ciclo de vida del objeto,
+como cambiar el IBAN o la contraseña como ejemplos claros.
+
+-Serie: Las series deberan ser seguidas en su ciclo de vida, y asignadas una identidad única ya que
+sus atributos no son inmutables. Ejemplos de cambios que justifiquen que cada serie sea seguida son:
+cambiar una errata en una sinopsis, añadir una temporada nueva.
+
+-Temporada: Se sigue una lógica similar a serie, los objetos de esta instancian pueden cambiar a lo
+largo de su ciclo de vida, en el caso que se añadan episodios a la temporada. Sin una identidad no se
+puede realizar esa simple acción que realizan aplicacion como Amazon Prime.
+
+-Episodio: Aunque a primera vista parece un objeto inmutable, este debe tener una identidad propia ya que se le pueden cambiar atributos como la sinopsis por erratas, o el video del episiodio.
+
+-Persona: Seguimos su ciclo de vida, ya que aunque muy poco común los actores pueden cambiar
+legalmente su nombre, y para que esos cambios dirijan al mismo actor en las instancias de serie es
+crucial que tenga una identidad.
+
+-FacturaMes: Requiere una identidad global, ya que a esta clase se le pueden añadir cargos que
+hacen que la clase no pueda ser inmutable. Además por motivos de auditoria es crucial que no pueda
+haber distintas instancias con distintos valores ya que sería un desastre a nivel contable.
+
+[ValueObjects]
+
+-SiguimientoEpisodio: No pasa nada si hay instancias con el mismo valor ya que para la lógica del
+negocio son iguales. Esto es porque estas instancias se crean la primera vez que el usuario ha visto
+un episodio y solo importan sus datos para la lógica. Además son inmutables desde su creación.
+
+-Categoría: Esta clase se usa para determinar el precio de los episodios, pero tiene un problema si
+guardamos su identidad y es que el precio si se cambia cambiara la referencia de los cargos lo que
+por motivos de auditoria es un desastre ya que perdemos el valor de precio que existía antes para un determinado cargo en ese momento. Además que al recalcular los datos de contabilidad se puede provocar
+un gran desastre en las cuentas.
+
+-Cargo: Es un valueObject ya que es un objeto inmutable generado cada vez que se ve un episodio y su
+unica funcionalidad viene definida por sus datos, por lo que dos instancias iguales son a efectos
+practicos lo mismo.
+
+-PlanCuota: Es un valueObject por el mismo motivo que Categoría, ya que las instancias deben ser
+inmutables y no seguidas por que si se hace lo contrario surgen problemas graves de contabilidad.
+
+
+[Services]
+No hay
+
+
+[Agregattes]
+-Agregatte de Usuarios: Contiene a Usuario y seguimientoEpisodio. Contiene la lógica relacionada a las
+acciones de los usuarios de nuestra aplicación.
+    -[ROOT]: Usuario, ya que es la entity que dirige la lógica de este agregatte(y que es la única
+    entity además)
+
+-Agregatte de Facturas:Contiene a FacturaMensual, PlanCuota y Cargo. Maneja la lógica de las facturas,
+debe estar separada de usuario por motivos de auditoria.
+    -[ROOT]:FacturaMensual al ser la unica entity del agregatte y dirigir la lógica de este.
+
+-Agregatte de Series: Pertenecen a el Serie, Temporada, Episodio, IdEpisodio, Categoria y Persona. En
+este segmento de la lógica se implementa toda la lógica que define las series.
+    -[ROOT]: Serie es la clase central del agregatte dirige la lógica y tiene relaciones de composición con Temporada y Episodio.
