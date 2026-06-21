@@ -66,10 +66,10 @@ public class UsuarioService {
     }
 
     @Transactional(readOnly = true)
-    public Set<Serie> obtenerSeriesUsuario(String nombreUsuario) {
+    public Usuario obtenerSeriesUsuario(String nombreUsuario) {
         Usuario u = usuarioRepository.findById(nombreUsuario)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
-        return u.getSeriesAgregadas(); 
+        return u;
     }
 
 

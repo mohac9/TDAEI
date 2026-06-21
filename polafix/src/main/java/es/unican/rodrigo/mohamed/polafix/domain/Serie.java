@@ -87,6 +87,32 @@ public class Serie {
         this.actores = actores;
     }
 
+    //Este método es auxiliar, ya se que es poco eficiente
+    public Episodio getUltimoEpisodio() {
+        Temporada ultimaTemporada = null;
+        for (Temporada t : getTemporada()) { 
+            if (ultimaTemporada == null || t.getNumTemporada() > ultimaTemporada.getNumTemporada()) {
+                ultimaTemporada = t;
+            }
+        }
+
+        if (ultimaTemporada == null) {
+            return null;
+        }
+
+        //Soy consciente que aunque ID este generado por secuencia no garantiza el orden real
+        //Esto es para no cambiar el appfeeder y hacer que la app mantenga el modelo de dominio
+        //La solución ideal seria si episodio tuviese un atrib numEpisodio y hacer el get por aqui
+        Episodio ultimoEpisodio = null;
+        for (Episodio e : ultimaTemporada.getEpisodio()) {
+            if (ultimoEpisodio == null || e.getId() > ultimoEpisodio.getId()) {
+                ultimoEpisodio = e;
+            }
+        }
+        return ultimoEpisodio;
+    }
+    
+
     @Override
     public int hashCode() {
         return Objects.hash(nombre);

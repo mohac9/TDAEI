@@ -14,6 +14,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/usuarios")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
@@ -57,11 +58,11 @@ public class UsuarioController {
 
     @GetMapping("/{nombreUsuario}/series")
     @JsonView(Views.ListasUsuario.class)
-    public ResponseEntity<Set<Serie>> obtenerSeriesUsuario(@PathVariable String nombreUsuario) {
-        ResponseEntity<Set<Serie>> result = null;
+    public ResponseEntity<Usuario> obtenerSeriesUsuario(@PathVariable String nombreUsuario) {
+        ResponseEntity<Usuario> result = null;
         try {
-            Set<Serie> series = usuarioService.obtenerSeriesUsuario(nombreUsuario);
-            result = ResponseEntity.status(HttpStatus.OK).body(series);
+            Usuario usuario = usuarioService.obtenerSeriesUsuario(nombreUsuario);
+            result = ResponseEntity.status(HttpStatus.OK).body(usuario);
         } catch(IllegalArgumentException e) {
             result = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

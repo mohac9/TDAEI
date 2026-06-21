@@ -55,6 +55,10 @@ public class Episodio {
         this.serie = serie;
     }
 
+    public long getId(){
+        return this.id;
+    }
+
     public Temporada getTemporada() {
         return temporada;
     }

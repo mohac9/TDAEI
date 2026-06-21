@@ -54,6 +54,15 @@ public class Usuario {
     public void verEpisodio(final Episodio episodio) {
         if (episodio == null) return;
         SeguimientoEpisodio seguimiento = new SeguimientoEpisodio(episodio);
+        Serie serie = episodio.getSerie();
+        if(getPendientes().contains(serie)){
+            anadirEmpezada(serie);
+        }
+
+        if(serie.getUltimoEpisodio().equals(episodio)){
+            anadirTerminada(serie);
+        }
+
         episodiosVistos.add(seguimiento);
     }
     public void agregarSerie(final Serie serie) {
@@ -65,6 +74,7 @@ public class Usuario {
     // Métodos para añadir series a los conjuntos correspondientes
     public boolean anadirEmpezada(final Serie serie) {
         if (serie == null) return false;
+        pendientes.remove(serie);
         return empezadas.add(serie);
     }
 
@@ -75,6 +85,10 @@ public class Usuario {
 
     public boolean anadirTerminada(final Serie serie) {
         if (serie == null) return false;
+        //Solo se mira el último episodio para determinar si una serie esta terminada
+        //Por relleno
+        terminadas.remove(serie);
+        empezadas.remove(serie);
         return terminadas.add(serie);
     }
 
@@ -170,6 +184,8 @@ public class Usuario {
     public void setEpisodiosVistos(Set<SeguimientoEpisodio> episodiosVistos) {
         this.episodiosVistos = episodiosVistos;
     }
+
+    
     
     @Override
     public boolean equals(Object o) {

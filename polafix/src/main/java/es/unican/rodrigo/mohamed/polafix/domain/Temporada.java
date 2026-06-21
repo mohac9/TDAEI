@@ -18,14 +18,14 @@ public class Temporada {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @JsonIgnore
-    private String idTemporada;
+    private Long idTemporada;
     @OneToMany(cascade = CascadeType.ALL)
     @JsonView(Views.ListaEpisodios.class)
     private Set<Episodio> episodio = new HashSet<Episodio>();
 
     protected Temporada() {}
 
-    public Temporada(int numTemporada, String idTemporada) {
+    public Temporada(int numTemporada) {
         this.numTemporada = numTemporada;
         this.idTemporada = idTemporada;
     }
@@ -38,11 +38,11 @@ public class Temporada {
         this.numTemporada = numTemporada;
     }
 
-    public String getIdTemporada() {
+    public Long getIdTemporada() {
         return idTemporada;
     }
 
-    public void setIdTemporada(String idTemporada) {
+    public void setIdTemporada(Long idTemporada) {
         this.idTemporada = idTemporada;
     }
 
@@ -56,17 +56,17 @@ public class Temporada {
 
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o) { //Soy consciente que solo comparar la temporada para el equals es problematico
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         
         Temporada temporada = (Temporada) o;
         
-        return Objects.equals(idTemporada, temporada.idTemporada);
+        return numTemporada == temporada.numTemporada;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idTemporada);
+        return Objects.hash(numTemporada);
     }
 }
